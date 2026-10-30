@@ -1,0 +1,41 @@
+name: Install SciLand V2 visual site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.upload/part-05.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify and install SciLand V2
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f .upload/part-00.txt
+          test -f .upload/part-01.txt
+          test -f .upload/part-02.txt
+          test -f .upload/part-03.txt
+          test -f .upload/part-04.txt
+          test -f .upload/part-05.txt
+          cat .upload/part-*.txt | base64 --decode > /tmp/sciland-v2.tar.xz
+          echo '1a90e25dfb04b275fb54b372316658d40deecccc8319c277fe50563de2d965bc  /tmp/sciland-v2.tar.xz' | sha256sum -c -
+          tar -xJf /tmp/sciland-v2.tar.xz
+          test -s index.html && test -s styles.css && test -s app.js && test -s site-content.js
+          test -s assets/hero-lab.svg && test -s assets/project-sciland.svg && test -s assets/favicon.svg
+          ! grep -Eiq 'island|sci-rsi|civilizedvla' index.html app.js site-content.js styles.css
+          rm -rf .upload
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html styles.css app.js site-content.js assets/ .nojekyll .upload
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish SciLand V2 complete visual website'
+            git push origin HEAD:main
+          fi
