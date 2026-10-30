@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 630" role="img" aria-label="Illustration of a robot arm working with scientific laboratory instruments">
+ <defs>
+  <linearGradient id="base" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#0B385A"/><stop offset="1" stop-color="#071A35"/></linearGradient>
+  <linearGradient id="arm" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#D7EEFC"/><stop offset=".45" stop-color="#78B7D9"/><stop offset="1" stop-color="#34749E"/></linearGradient>
+  <linearGradient id="arm2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ACD8F2"/><stop offset="1" stop-color="#30688F"/></linearGradient>
+  <linearGradient id="cyan" x1="0" x2="1"><stop stop-color="#3FE1E9"/><stop offset="1" stop-color="#6BB8FF"/></linearGradient>
+  <radialGradient id="halo"><stop stop-color="#2FC4EB" stop-opacity=".19"/><stop offset="1" stop-color="#2FC4EB" stop-opacity="0"/></radialGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="7"/></filter>
+  <pattern id="grid" width="38" height="38" patternUnits="userSpaceOnUse"><path d="M38 0H0V38" stroke="#6CC6F4" stroke-opacity=".12" fill="none"/></pattern>
+  <filter id="shadow" x="-60%" y="-60%" width="220%" height="220%"><feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#000B20" flood-opacity=".55"/></filter>
+ </defs>
+ <circle cx="364" cy="288" r="272" fill="url(#halo)"/>
+ <ellipse cx="362" cy="489" rx="299" ry="89" fill="#164B6D" opacity=".28"/>
+ <path d="M44 461 345 331 651 453 345 582Z" fill="url(#base)" stroke="#64B8DE" stroke-opacity=".65" stroke-width="2"/>
+ <path d="M44 461 345 331 651 453 345 582Z" fill="url(#grid)" opacity=".6"/>
+ <path d="m44 461 301 121v20L44 481Zm301 121 306-129v20L345 602Z" fill="#0A2C4D" stroke="#4F94BB" stroke-opacity=".5"/>
+ <path d="M345 331v252" stroke="#61C7E8" stroke-opacity=".16"/>
+ <g stroke="#65BADF" stroke-opacity=".18" fill="none"><circle cx="349" cy="295" r="183"/><circle cx="349" cy="295" r="232" stroke-dasharray="5 11"/><path d="M100 295h498M349 42v520" stroke-dasharray="3 10"/></g>
+ <!-- laboratory vessels -->
+ <g transform="translate(433 420)" filter="url(#shadow)">
+  <path d="m0 0 86-35 107 40-86 37Z" fill="#205C81" stroke="#6AD7F1" stroke-opacity=".8" stroke-width="2"/>
+  <path d="m0 0 107 42v21L0 19Zm107 42L193 5v20l-86 38Z" fill="#0F395D" stroke="#4AA2C8"/>
+  <g fill="#51D8E8" opacity=".93">
+   <ellipse cx="45" cy="-1" rx="9" ry="4"/><ellipse cx="71" cy="9" rx="9" ry="4"/><ellipse cx="97" cy="19" rx="9" ry="4"/><ellipse cx="72" cy="-13" rx="9" ry="4"/><ellipse cx="98" cy="-3" rx="9" ry="4"/><ellipse cx="124" cy="7" rx="9" ry="4"/>
+  </g>
+  <g fill="#032940" stroke="#6DCCE7" stroke-opacity=".6"><ellipse cx="46" cy="-2" rx="5" ry="2"/><ellipse cx="71" cy="8" rx="5" ry="2"/><ellipse cx="98" cy="18" rx="5" ry="2"/></g>
+ </g>
+ <g transform="translate(128 435)">
+  <path d="m0 0 76-31 69 28-75 32Z" fill="#1C628B" stroke="#6FB5D7"/><path d="m0 0 70 29v19L0 20Zm70 29 75-32v20L70 48Z" fill="#0D365A" stroke="#477EAC"/>
+  <g stroke="#89E5F9" stroke-width="2.5" fill="#164C73">
+   <path d="M40-5v-47c0-12 18-12 18 0v47c0 11-18 11-18 0Z"/>
+   <path d="M68 7v-61c0-12 18-12 18 0V7c0 11-18 11-18 0Z"/>
+   <path d="M92-5v-40c0-11 18-11 18 0v40c0 11-18 11-18 0Z"/>
+  </g>
+  <path d="M43-26h12m16-8h12m12 9h12" stroke="#57E5F1" stroke-width="7" opacity=".8"/>
+ </g>
+ <!-- robot base -->
+ <g filter="url(#shadow)">
+  <ellipse cx="305" cy="476" rx="92" ry="33" fill="#05243F" stroke="#4C9BC0" stroke-width="2"/>
+  <path d="M254 420h101l25 55c-41 23-101 20-151-3Z" fill="url(#arm2)" stroke="#A5DCF0" stroke-width="2"/>
+  <ellipse cx="305" cy="420" rx="53" ry="18" fill="#D7F4FF" stroke="#36648E" stroke-width="4"/>
+  <ellipse cx="305" cy="421" rx="33" ry="11" fill="#377DA6"/>
+  <path d="M290 425 271 314c-3-19 17-30 32-24l27 10 17 118" fill="url(#arm)" stroke="#B3E7FC" stroke-width="3"/>
+  <ellipse cx="295" cy="299" rx="39" ry="36" fill="#0D3558" stroke="#A4DCF5" stroke-width="7"/>
+  <circle cx="295" cy="299" r="22" fill="#326D94" stroke="#74D9FA" stroke-width="2"/>
+  <!-- upper arm -->
+  <g transform="rotate(-29 295 299)">
+   <rect x="266" y="160" width="58" height="156" rx="28" fill="url(#arm)" stroke="#BAE9FB" stroke-width="3"/>
+   <rect x="281" y="191" width="28" height="80" rx="10" fill="#6CB0D1" opacity=".36"/>
+   <ellipse cx="295" cy="171" rx="36" ry="35" fill="#0F3656" stroke="#AEDAF1" stroke-width="7"/>
+   <circle cx="295" cy="171" r="16" fill="#2E769C" stroke="#61C9E9" stroke-width="2"/>
+  </g>
+  <!-- forearm from above-left to center-right -->
+  <g transform="rotate(22 363 194)">
+   <path d="M358 166h126a25 25 0 0 1 0 50H358a25 25 0 0 1 0-50Z" fill="url(#arm)" stroke="#B7E6FD" stroke-width="3"/>
+   <path d="M383 180h82" stroke="#E1F8FF" stroke-opacity=".57" stroke-width="5" stroke-linecap="round"/>
+   <ellipse cx="363" cy="191" rx="32" ry="33" fill="#12385D" stroke="#9ADAF6" stroke-width="6"/>
+   <circle cx="363" cy="191" r="17" fill="#3D8BAF" stroke="#76E3F3" stroke-width="2"/>
+  </g>
+  <!-- wrist and gripper -->
+  <g transform="translate(490 247) rotate(24)">
+   <rect x="-31" y="-24" width="65" height="54" rx="15" fill="url(#arm2)" stroke="#C1EAFF" stroke-width="3"/>
+   <circle cx="0" cy="4" r="18" fill="#143D61" stroke="#8FD9ED" stroke-width="5"/>
+   <path d="M-13 24v32c0 11 10 18 19 18M14 24v32c0 11-10 18-19 18" fill="none" stroke="#BFEAF9" stroke-width="8" stroke-linecap="round"/>
+   <path d="M-9 58v26M9 58v26" stroke="#56CFEA" stroke-width="5" stroke-linecap="round"/>
+  </g>
+ </g>
+ <!-- targeting zone -->
+ <circle cx="499" cy="352" r="37" fill="#35E7F5" opacity=".08"/><circle cx="499" cy="352" r="30" fill="none" stroke="#50E0ED" stroke-width="2" stroke-dasharray="5 8"/>
+ <path d="M499 313v17m0 44v17m-39-39h17m44 0h17" stroke="#60E4F0" stroke-width="2"/>
+ <circle cx="499" cy="352" r="6" fill="#5DECF1" filter="url(#glow)"/><circle cx="499" cy="352" r="3" fill="#B0FFFF"/>
+ <!-- dots and info guides -->
+ <g font-family="Arial,sans-serif" font-size="14" fill="#9CD8EE" letter-spacing="2">
+  <path d="M160 205h92l55 61" fill="none" stroke="#75CBEC" stroke-opacity=".4" stroke-width="1.5"/>
+  <circle cx="160" cy="205" r="3" fill="#65E0F2"/><text x="85" y="194">JOINT 03</text>
+  <path d="M543 312h85" fill="none" stroke="#75CBEC" stroke-opacity=".4" stroke-width="1.5"/>
+  <circle cx="628" cy="312" r="3" fill="#65E0F2"/><text x="554" y="301">TARGET</text>
+  <path d="M368 470h-33l-23-23" fill="none" stroke="#75CBEC" stroke-opacity=".4" stroke-width="1.5"/>
+ </g>
+ <g fill="#70DCEE"><circle cx="122" cy="319" r="2"/><circle cx="580" cy="177" r="2"/><circle cx="194" cy="122" r="2"/><circle cx="618" cy="398" r="2"/></g>
+</svg>
