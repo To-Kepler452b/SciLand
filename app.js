@@ -130,40 +130,116 @@
     revealElements.forEach(el=>revealObserver.observe(el));
   }
 
-  // Dynamic particle background. Runs only when visible, adjusts to viewport and user preferences.
+  // SciLand V3: cinematic cyan/violet dust, constellation edges and energy pulses.
+  // Canvas is capped on mobile, paused off-screen, and disabled for reduced motion.
   const canvas = $('#particle-canvas');
-  const context = canvas.getContext('2d', {alpha:true});
+  const context = canvas && canvas.getContext('2d', {alpha:true});
   if (context && !motionReduced) {
-    let particles=[], raf=0, width=0, height=0, dpr=1, active=true;
+    const hero = $('.hero');
+    const rand = (min,max) => min+Math.random()*(max-min);
+    let particles=[], streaks=[], raf=0, width=0, height=0, dpr=1;
+    let active=false, inView=true, pointerX=.64, pointerY=.36, lastFrame=0;
     function resize() {
-      const rect=canvas.getBoundingClientRect();width=rect.width;height=rect.height;dpr=Math.min(window.devicePixelRatio||1,2);
-      canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);context.setTransform(dpr,0,0,dpr,0,0);
-      const target=Math.min(115,Math.max(34,Math.round((width*height)/11800)));
-      particles=Array.from({length:target}, () => ({x:Math.random()*width,y:Math.random()*height,r:.5+Math.random()*1.6,vx:(Math.random()-.5)*.16,vy:(Math.random()-.5)*.16,a:.22+Math.random()*.52}));
+      const rect=canvas.getBoundingClientRect();
+      width=rect.width; height=rect.height;
+      if(width<1 || height<1) return;
+      dpr=Math.min(window.devicePixelRatio||1,1.6);
+      canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
+      context.setTransform(dpr,0,0,dpr,0,0);
+      const compact=window.innerWidth<700;
+      const count=compact ? Math.min(52,Math.round(width*height/10000))
+        : Math.min(145,Math.max(58,Math.round(width*height/10500)));
+      particles=Array.from({length:count}, (_,i)=>({
+        x:rand(0,width),y:rand(0,height),r:rand(.55,2.3),
+        vx:rand(-.19,.19),vy:rand(-.22,.17),
+        alpha:rand(.22,.82),phase:rand(0,Math.PI*2),
+        purple:i%3===0, constellation:i%3===0 && !compact
+      }));
+      streaks=Array.from({length:compact?2:7},()=>({
+        x:rand(width*.35,width),y:rand(0,height),
+        vx:rand(-1.4,-.45),vy:rand(.12,.64),len:rand(17,65),
+        alpha:rand(.12,.4),phase:rand(0,Math.PI*2)
+      }));
     }
-    function frame() {
-      if(!active) return;
+    function draw(t) {
+      if(!active)return;
+      raf=requestAnimationFrame(draw);
+      if(t-lastFrame<33)return; // ~30fps limits GPU load on laptops and mobile
+      const dt=Math.min(2,(t-lastFrame)/33||1);lastFrame=t;
       context.clearRect(0,0,width,height);
-      for(let i=0;i<particles.length;i++) {
-        const p=particles[i];p.x+=p.vx;p.y+=p.vy;
-        if(p.x<0)p.x=width;if(p.x>width)p.x=0;if(p.y<0)p.y=height;if(p.y>height)p.y=0;
-        context.beginPath();context.arc(p.x,p.y,p.r,0,Math.PI*2);context.fillStyle=`rgba(160,220,246,${p.a})`;context.fill();
-        if (i % 4 === 0) {
-          for(let j=i+1;j<Math.min(i+8,particles.length);j++){
-            const q=particles[j],dist=Math.hypot(p.x-q.x,p.y-q.y);
-            if(dist<140){context.beginPath();context.moveTo(p.x,p.y);context.lineTo(q.x,q.y);context.strokeStyle=`rgba(100,193,234,${(1-dist/140)*.105})`;context.lineWidth=.7;context.stroke();}
-          }
+      if(width<1||height<1)return;
+      const compact=window.innerWidth<700;
+      for(const p of particles){
+        p.x+=p.vx*dt;p.y+=p.vy*dt;p.phase+=.014*dt;
+        if(p.x<0)p.x=width;if(p.x>width)p.x=0;
+        if(p.y<0)p.y=height;if(p.y>height)p.y=0;
+        const a=p.alpha*(.74+.26*Math.sin(p.phase));
+        const color=p.purple?'168,110,255':'95,206,255';
+        if(p.r>1.45){
+          const halo=context.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*7);
+          halo.addColorStop(0,'rgba('+color+','+(a*.25)+')');
+          halo.addColorStop(1,'rgba('+color+',0)');
+          context.fillStyle=halo;context.beginPath();
+          context.arc(p.x,p.y,p.r*7,0,Math.PI*2);context.fill();
+        }
+        context.fillStyle='rgba('+color+','+a+')';
+        context.beginPath();context.arc(p.x,p.y,p.r,0,Math.PI*2);context.fill();
+      }
+      // Sparse, localized network: brighter toward the right, not across headings.
+      if(!compact)for(let i=0;i<particles.length;i+=2){
+        const p=particles[i];if(p.x<width*.45)continue;
+        for(let j=i+1;j<Math.min(i+17,particles.length);j++){
+          const q=particles[j];const dx=p.x-q.x,dy=p.y-q.y;
+          const dist2=dx*dx+dy*dy;
+          if(dist2>175*175 || dist2<15*15)continue;
+          const alpha=(1-Math.sqrt(dist2)/175)*.19;
+          context.strokeStyle=p.purple?'rgba(174,109,255,'+alpha+')':'rgba(89,202,255,'+alpha+')';
+          context.lineWidth=.8;context.beginPath();
+          context.moveTo(p.x,p.y);context.lineTo(q.x,q.y);context.stroke();
         }
       }
-      raf=requestAnimationFrame(frame);
+      // Faint comet-like energy motes behind live content.
+      for(const s of streaks){
+        s.x+=s.vx*dt;s.y+=s.vy*dt;
+        if(s.x<-90 || s.y>height+90){s.x=rand(width*.55,width+40);s.y=rand(-40,height*.7);}
+        const g=context.createLinearGradient(s.x,s.y,s.x+s.len,s.y-s.len*.26);
+        g.addColorStop(0,'rgba(170,107,255,0)');
+        g.addColorStop(1,'rgba(103,207,255,'+s.alpha+')');
+        context.strokeStyle=g;context.lineWidth=1.2;context.beginPath();
+        context.moveTo(s.x,s.y);context.lineTo(s.x+s.len,s.y-s.len*.26);context.stroke();
+      }
+      // Gentle interactive parallax glow, without pointer handlers on the canvas itself.
+      if(!compact){
+        const gx=width*(.63+(pointerX-.5)*.08);
+        const gy=height*(.36+(pointerY-.5)*.08);
+        const glow=context.createRadialGradient(gx,gy,0,gx,gy,Math.min(width*.30,360));
+        glow.addColorStop(0,'rgba(97,81,224,.048)');
+        glow.addColorStop(1,'rgba(97,81,224,0)');
+        context.fillStyle=glow;context.fillRect(0,0,width,height);
+      }
     }
-    function start(){if(!active){active=true;raf=requestAnimationFrame(frame);}}
-    function stop(){active=false;cancelAnimationFrame(raf);}
-    resize();frame();
-    window.addEventListener('resize',resize,{passive:true});
-    document.addEventListener('visibilitychange',()=>document.hidden?stop():start());
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(entries=>{entries[0].isIntersecting?start():stop();},{threshold:0}).observe(canvas);
+    function stop(){active=false;cancelAnimationFrame(raf);raf=0;}
+    function sync(){
+      if(!document.hidden && inView && !active){
+        active=true;lastFrame=0;raf=requestAnimationFrame(draw);
+      }else if((document.hidden||!inView)&&active)stop();
     }
+    let resizeFrame=0;
+    window.addEventListener('resize',()=>{
+      if(resizeFrame)return;
+      resizeFrame=requestAnimationFrame(()=>{resizeFrame=0;resize();});
+    },{passive:true});
+    if(hero)hero.addEventListener('pointermove',e=>{
+      const r=hero.getBoundingClientRect();
+      pointerX=(e.clientX-r.left)/Math.max(1,r.width);
+      pointerY=(e.clientY-r.top)/Math.max(1,r.height);
+    },{passive:true});
+    document.addEventListener('visibilitychange',sync);
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(entries=>{
+        inView=entries[0].isIntersecting;sync();
+      },{threshold:0}).observe(canvas);
+    }
+    resize();sync();
   }
 })();
