@@ -417,7 +417,7 @@ h1,h2,h3 { font-family:'Manrope','DM Sans',Arial,sans-serif; }
   background-image:
     linear-gradient(90deg,rgba(2,8,25,.77) 0%,rgba(4,12,32,.66) 31%,rgba(6,13,36,.15) 70%,rgba(8,10,33,.05) 100%),
     linear-gradient(0deg,rgba(2,7,20,.58) 0%,transparent 31%,rgba(4,10,28,.18) 100%),
-    url("assets/hero-cinematic.svg?v=v4-dna-throughput-2048");
+    url("assets/hero-cinematic.svg?v=v5-natural-integrated-2048");
   background-size:cover;
   background-position:center center;
 }
@@ -477,7 +477,7 @@ h1,h2,h3 { font-family:'Manrope','DM Sans',Arial,sans-serif; }
 @media(max-width:580px){
  .hero{background-position:61% center;
   background-image:linear-gradient(90deg,rgba(2,8,23,.87),rgba(5,12,30,.52)),
-    linear-gradient(0deg,rgba(2,7,20,.56),transparent 62%),url("assets/hero-cinematic.svg?v=v4-dna-throughput-2048");}
+    linear-gradient(0deg,rgba(2,7,20,.56),transparent 62%),url("assets/hero-cinematic.svg?v=v5-natural-integrated-2048");}
  .hero-content{padding-top:145px;padding-bottom:60px;min-height:calc(100svh - 55px);}
  .hero h1{font-size:clamp(56px,14vw,74px);margin-top:22px;margin-bottom:26px;}
  .hero h1 em{font-size:.58em;}
