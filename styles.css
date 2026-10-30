@@ -408,3 +408,81 @@ h1,h2,h3 { font-family:'Manrope','DM Sans',Arial,sans-serif; }
   .project-grid.single-project .project-cover { height:auto; min-height:0; aspect-ratio:700/430; }
   .project-grid.single-project .project-content { padding:26px 23px 21px; }
 }
+
+
+/* SciLand V3 — Cinematic laboratory hero, based on the user-provided blue-violet robotics reference.
+   Uses a repository-local artwork with live HTML text and separate animated canvas particles. */
+.hero {
+  background-color:#040b20;
+  background-image:
+    linear-gradient(90deg,rgba(2,8,25,.77) 0%,rgba(4,12,32,.66) 31%,rgba(6,13,36,.15) 70%,rgba(8,10,33,.05) 100%),
+    linear-gradient(0deg,rgba(2,7,20,.58) 0%,transparent 31%,rgba(4,10,28,.18) 100%),
+    url("assets/hero-cinematic.svg");
+  background-size:cover;
+  background-position:center center;
+}
+.hero::after{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 73% 33%,rgba(100,48,221,.12),transparent 43%),
+    radial-gradient(ellipse at 60% 60%,rgba(13,114,232,.10),transparent 55%);
+  mix-blend-mode:screen;
+}
+.hero-content{
+  grid-template-columns:minmax(0,690px) minmax(0,1fr);
+  position:relative;z-index:3;
+  padding-top:156px;padding-bottom:96px;
+}
+.hero-copy{z-index:4;max-width:680px;}
+.hero-visual{display:none;}
+.hero h1{max-width:690px;font-size:clamp(72px,7.4vw,119px);line-height:1.01;letter-spacing:-.075em;margin:25px 0 28px;
+  text-shadow:0 6px 45px rgba(1,10,30,.66);}
+.hero h1 span{color:#f4f9ff;}
+.hero h1 em{
+  font-size:.53em;font-weight:650;line-height:1.23;letter-spacing:-.058em;
+  background:linear-gradient(95deg,#a7eafb 2%,#5dc1ff 48%,#c5a8ff 97%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:none;padding-top:11px;max-width:650px;
+}
+.hero-description{font-size:16px;color:#d5e0f4;max-width:510px;
+  text-shadow:0 2px 19px rgba(1,8,23,.85);}
+.light-eyebrow{color:#a1c7ff;}
+.eyebrow-line{background:linear-gradient(90deg,#51c6fc,#c181ff);}
+.hero-line{color:#b5c6e5;margin-top:34px;}
+.hero-line-dot{background:#a57eff;box-shadow:0 0 22px #9467fd,0 0 9px #78dbfe;}
+.btn-primary{background:linear-gradient(110deg,#57b8fa,#7d73ff);color:#fff;box-shadow:0 12px 35px rgba(73,99,237,.23);}
+.btn-primary:hover{background:linear-gradient(110deg,#80d9ff,#a293ff);}
+.btn-ghost{color:#e6e7ff;}
+.hero-mini{color:#b9bee1;}
+#particle-canvas{z-index:2;opacity:1;pointer-events:none;}
+.hero-grid{z-index:1;opacity:.22;mix-blend-mode:screen;}
+.hero-glow{z-index:1;mix-blend-mode:screen;}
+.hero-glow-one{background:radial-gradient(ellipse,rgba(132,57,245,.22),transparent 64%);}
+.hero-glow-two{background:radial-gradient(ellipse,rgba(30,117,231,.20),transparent 64%);}
+.hero-bottom{position:relative;z-index:3;color:#bfd8ff;}
+.scroll-prompt{color:#e1e9ff;}
+@media(max-width:980px){
+ .hero-content{grid-template-columns:minmax(0,1fr) .35fr;padding-top:145px;}
+ .hero h1{font-size:clamp(66px,8vw,102px);}
+}
+@media(max-width:800px){
+ .hero{min-height:100svh;background-position:59% center;}
+ .hero-content{display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:20px;
+  padding-top:157px;padding-bottom:78px;min-height:calc(100svh - 65px);}
+ .hero-copy{max-width:600px;}
+ .hero h1{font-size:clamp(58px,10vw,87px);max-width:590px;}
+ .hero h1 em{font-size:.56em;}
+ .hero-description{max-width:490px;}
+}
+@media(max-width:580px){
+ .hero{background-position:61% center;
+  background-image:linear-gradient(90deg,rgba(2,8,23,.87),rgba(5,12,30,.52)),
+    linear-gradient(0deg,rgba(2,7,20,.56),transparent 62%),url("assets/hero-cinematic.svg");}
+ .hero-content{padding-top:145px;padding-bottom:60px;min-height:calc(100svh - 55px);}
+ .hero h1{font-size:clamp(56px,14vw,74px);margin-top:22px;margin-bottom:26px;}
+ .hero h1 em{font-size:.58em;}
+ .hero-description{font-size:14px;}
+ .hero-line{margin-top:30px;}
+ #particle-canvas{opacity:.77;}
+}
+@media(prefers-reduced-motion:reduce){#particle-canvas{display:none;}}
