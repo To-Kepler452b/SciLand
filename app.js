@@ -208,6 +208,27 @@
         context.strokeStyle=g;context.lineWidth=1.2;context.beginPath();
         context.moveTo(s.x,s.y);context.lineTo(s.x+s.len,s.y-s.len*.26);context.stroke();
       }
+      // SciLand V6 DNA-linked resonance: low-cost synchronized energy nodes.
+      // Positioned over the holographic network, not over the text.
+      if(!compact){
+        const phase=t*.00058;
+        const nodes=9;
+        for(let k=0;k<nodes;k++){
+          const progress=k/(nodes-1);
+          const nx=width*(.57+.34*progress);
+          const ny=height*(.20+.10*Math.sin(progress*8.8+phase*.62)+.06*progress);
+          const flicker=.42+.45*Math.sin(phase*2.0-k*.64);
+          const alpha=.10+.17*flicker;
+          const radius=2.5+2.5*flicker;
+          const color=k%3===0?'185,125,255':'102,211,255';
+          const halo=context.createRadialGradient(nx,ny,0,nx,ny,radius*9);
+          halo.addColorStop(0,'rgba('+color+','+alpha+')');
+          halo.addColorStop(.28,'rgba('+color+','+(alpha*.33)+')');
+          halo.addColorStop(1,'rgba('+color+',0)');
+          context.fillStyle=halo;
+          context.beginPath();context.arc(nx,ny,radius*9,0,Math.PI*2);context.fill();
+        }
+      }
       // Gentle interactive parallax glow, without pointer handlers on the canvas itself.
       if(!compact){
         const gx=width*(.63+(pointerX-.5)*.08);
