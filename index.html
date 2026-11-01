@@ -8,8 +8,10 @@
   <title>SciLand Lab — Scientific Embodied Intelligence</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="dna-helix.css?v=v7-rotating" />
   <script defer src="site-content.js"></script>
   <script defer src="app.js"></script>
+  <script defer src="dna-helix.js?v=v7-rotating"></script>
 </head>
 <body>
   <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
@@ -42,50 +44,11 @@
   <main id="main">
     <section class="hero" id="top" aria-labelledby="hero-title">
       <canvas id="particle-canvas" aria-hidden="true"></canvas>
+      <!-- The baked-in DNA is gently softened before the real rotating helix renders above it. -->
+      <div class="dna-static-softener" aria-hidden="true"></div>
+      <canvas id="dna-helix-canvas" aria-hidden="true"></canvas>
 
-      <!-- DNA energy overlay aligns with the 2048×1152 photo using the same cover geometry.
-           Decorative only: live textual content remains selectable and accessible. -->
-      <svg class="dna-energy-overlay" viewBox="0 0 2048 1152" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="dna-cyan-violet" x1="0" x2="1" y1="0.7" y2="0.15">
-            <stop offset="0%" stop-color="#52deff" stop-opacity=".05"/>
-            <stop offset="47%" stop-color="#a7eaff" stop-opacity=".86"/>
-            <stop offset="100%" stop-color="#c28cff" stop-opacity=".23"/>
-          </linearGradient>
-          <radialGradient id="dna-energy-orb">
-            <stop offset="0%" stop-color="#fff" stop-opacity=".95"/>
-            <stop offset="16%" stop-color="#9eecff" stop-opacity=".8"/>
-            <stop offset="49%" stop-color="#77bbff" stop-opacity=".2"/>
-            <stop offset="100%" stop-color="#816bff" stop-opacity="0"/>
-          </radialGradient>
-          <radialGradient id="dna-energy-violet">
-            <stop offset="0%" stop-color="#fff" stop-opacity=".98"/>
-            <stop offset="17%" stop-color="#deb9ff" stop-opacity=".8"/>
-            <stop offset="55%" stop-color="#a46aff" stop-opacity=".18"/>
-            <stop offset="100%" stop-color="#a46aff" stop-opacity="0"/>
-          </radialGradient>
-          <filter id="dna-line-glow" x="-50%" y="-100%" width="200%" height="300%">
-            <feGaussianBlur stdDeviation="4"/>
-          </filter>
-          <path id="dna-energy-path-a" d="M 780,-90 C 892,52 978,202 1100,246 S 1348,303 1453,140 C 1490,82 1521,25 1560,-90"/>
-          <path id="dna-energy-path-b" d="M 1000,-90 C 1090,79 1158,220 1278,291 S 1522,127 1642,-95"/>
-        </defs>
-        <g class="dna-animated-strands">
-          <use href="#dna-energy-path-a" class="dna-energy-fiber dna-energy-fiber-cyan"/>
-          <use href="#dna-energy-path-b" class="dna-energy-fiber dna-energy-fiber-purple"/>
-          <use href="#dna-energy-path-a" class="dna-energy-shimmer"/>
-          <use href="#dna-energy-path-b" class="dna-energy-shimmer dna-energy-shimmer-late"/>
-        </g>
-        <circle r="27" fill="url(#dna-energy-orb)" class="dna-orbit-pulse">
-          <animateMotion dur="12s" repeatCount="indefinite" rotate="auto"><mpath href="#dna-energy-path-a"/></animateMotion>
-        </circle>
-        <circle r="19" fill="url(#dna-energy-violet)" class="dna-orbit-pulse">
-          <animateMotion dur="15s" begin="-6s" repeatCount="indefinite" rotate="auto"><mpath href="#dna-energy-path-b"/></animateMotion>
-        </circle>
-        <circle r="11" fill="url(#dna-energy-orb)" class="dna-orbit-pulse">
-          <animateMotion dur="9s" begin="-3s" repeatCount="indefinite" rotate="auto"><mpath href="#dna-energy-path-b"/></animateMotion>
-        </circle>
-      </svg>
+
       <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
       <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
       <div class="hero-grid" aria-hidden="true"></div>
