@@ -23,3 +23,5 @@
 @media(prefers-reduced-motion:reduce){
  #dna-helix-canvas{opacity:.62}
 }
+/* Phones retain the original sharp background DNA to protect hero-title legibility. */
+@media(max-width:800px){#dna-helix-canvas,.dna-static-softener{display:none!important}}
