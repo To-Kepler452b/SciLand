@@ -146,13 +146,15 @@
     running=false;if(raf)cancelAnimationFrame(raf);raf=0;last=0;lastTick=0;
   }
   function sync(){
+    // Phones show the high-resolution static background for readability and battery life.
+    if(window.innerWidth<=800){pause();return;}
     if(reduced.matches){pause();render(0);return;}
     if(!document.hidden && visible && !running){running=true;raf=requestAnimationFrame(draw);}
     if((document.hidden||!visible)&&running)pause();
   }
   let pending=0;
   window.addEventListener('resize',()=>{if(pending)return;pending=requestAnimationFrame(()=>{
-    pending=0;resize();render(elapsed);
+    pending=0;resize();if(window.innerWidth>800)render(elapsed);sync();
   });},{passive:true});
   document.addEventListener('visibilitychange',sync);
   if('IntersectionObserver' in window){
@@ -160,5 +162,5 @@
   }
   if(reduced.addEventListener)reduced.addEventListener('change',sync);
   else if(reduced.addListener)reduced.addListener(sync);
-  resize();render(0);sync();
+  resize();if(window.innerWidth>800)render(0);sync();
 })();
