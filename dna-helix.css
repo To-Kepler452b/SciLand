@@ -1,27 +1,26 @@
-/* SciLand V7: actually rotating 3D-projected DNA, not moving highlights on a flat helix. */
+/* SciLand V8: retain the original high-resolution molecule networks.
+   V7 had backdrop-filter:blur(17px), which hid the baked-in chemistry details.
+   The current overlay merely adds slight contrast beneath the dynamic helix. */
 .dna-static-softener,
-#dna-helix-canvas { position:absolute; inset:0; pointer-events:none; }
+#dna-helix-canvas {position:absolute;inset:0;pointer-events:none}
 .dna-static-softener {
   z-index:1;
-  /* Keep the V5 photograph but de-emphasize the helix already baked into it. */
-  background:radial-gradient(ellipse 45% 34% at 73% 16%,rgba(6,11,34,.63),rgba(5,12,34,.30) 55%,transparent 90%);
-  backdrop-filter:blur(17px) brightness(.77);
-  -webkit-backdrop-filter:blur(17px) brightness(.77);
-  -webkit-mask-image:radial-gradient(ellipse 47% 35% at 72% 17%,#000 0%,rgba(0,0,0,.93) 52%,transparent 98%);
-  mask-image:radial-gradient(ellipse 47% 35% at 72% 17%,#000 0%,rgba(0,0,0,.93) 52%,transparent 98%);
+  background:radial-gradient(ellipse 38% 18% at 74% 18%,
+      rgba(4,11,35,.28) 0%,rgba(5,12,35,.15) 55%,rgba(5,12,35,0) 100%);
+  /* Do not use backdrop-filter here: preserve original molecular detail. */
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  mask-image:none;
+  -webkit-mask-image:none;
 }
-#dna-helix-canvas {
+#dna-helix-canvas{
   z-index:2;width:100%;height:100%;
-  mix-blend-mode:screen;
+  mix-blend-mode:screen;opacity:.96;
 }
-/* Prevent old V6 path overlays from duplicating the rotating helix. */
-.dna-energy-overlay {display:none!important}
+.dna-energy-overlay{display:none!important}
 @media(max-width:800px){
- .dna-static-softener{opacity:.75;-webkit-backdrop-filter:blur(9px) brightness(.79);backdrop-filter:blur(9px) brightness(.79)}
- #dna-helix-canvas {opacity:.78}
+  #dna-helix-canvas,.dna-static-softener{display:none!important}
 }
 @media(prefers-reduced-motion:reduce){
- #dna-helix-canvas{opacity:.62}
+  #dna-helix-canvas{opacity:.67}
 }
-/* Phones retain the original sharp background DNA to protect hero-title legibility. */
-@media(max-width:800px){#dna-helix-canvas,.dna-static-softener{display:none!important}}
