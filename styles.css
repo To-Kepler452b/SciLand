@@ -526,3 +526,68 @@ h1,h2,h3 { font-family:'Manrope','DM Sans',Arial,sans-serif; }
 @media(prefers-reduced-motion:reduce){
  .dna-energy-overlay{display:none!important}
 }
+
+
+/* SciLand V9 — responsive hero/header sizing for wide Windows displays
+   Keep editorial body sections at their readable 1300px limit.
+   The immersive homepage and its navigation should NOT have that cap. */
+@media (min-width: 1440px) {
+  .site-header .nav-shell.container,
+  .hero .hero-content.container,
+  .hero .hero-bottom.container {
+    width: calc(100% - clamp(100px, 9vw, 320px));
+    max-width: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /* Use the left portion of the laboratory photo; leave the right open for the robot/DNA. */
+  .hero .hero-content {
+    grid-template-columns: minmax(0, min(47vw, 900px)) minmax(0, 1fr);
+    gap: clamp(36px, 4vw, 112px);
+  }
+  .hero .hero-copy { width: 100%; max-width: min(47vw, 900px); min-width: 0; }
+  .hero h1 { max-width: 100%; }
+}
+@media (min-width: 1600px) {
+  .site-header .brand-type strong { font-size: clamp(19px, 1.05vw, 25px); }
+  .site-header .brand-type small { font-size: clamp(8px, .48vw, 11px); }
+  .site-header .desktop-nav { gap: clamp(25px, 2vw, 48px); }
+  .site-header .desktop-nav a,
+  .site-header .nav-contact { font-size: clamp(14px, .9vw, 19px); }
+  .site-header .nav-contact { padding: 13px clamp(18px, 1.5vw, 32px); }
+  .hero .hero-content {
+    padding-top: clamp(128px, 11vh, 204px);
+    padding-bottom: clamp(65px, 8vh, 126px);
+  }
+  .hero h1 {
+    font-size: clamp(110px, 6.25vw, 168px);
+    line-height: 1.015;
+    max-width: 100%;
+  }
+  .hero h1 em { font-size: .50em; line-height: 1.19; max-width: 100%; }
+  .hero .hero-description {
+    font-size: clamp(16px, .92vw, 21px);
+    max-width: min(41vw, 690px);
+  }
+  .hero .light-eyebrow { font-size: clamp(10px, .65vw, 13px); }
+  .hero .hero-line { font-size: clamp(9px, .55vw, 12px); }
+  .hero .hero-mini { font-size: clamp(9px, .55vw, 12px); }
+  .hero .btn { font-size: clamp(13px, .87vw, 18px); }
+  .hero .btn-primary { padding: 20px 26px; }
+}
+/* Wider but shorter laptop windows or split-screen browsers: prevent clipping. */
+@media (min-width: 1000px) and (max-height: 820px) {
+  .hero .hero-content {
+    padding-top: 116px;
+    padding-bottom: 40px;
+  }
+  .hero h1 {
+    font-size: clamp(66px, 5.6vw, 120px);
+    margin-top: 12px;
+    margin-bottom: 18px;
+  }
+  .hero .hero-line { margin-top: 18px; }
+  .hero .hero-mini { margin-top: 18px; }
+  .hero .hero-description { margin-bottom: 20px; }
+}
+/* When browser zoom makes a window narrower, preserve the existing Mac/tablet behavior. */
