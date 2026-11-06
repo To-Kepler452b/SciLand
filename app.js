@@ -17,6 +17,69 @@
   $('#hero-title-first').textContent = data.heroTitleFirst;
   $('#hero-title-second').textContent = data.heroTitleSecond;
   $('#hero-description').textContent = data.heroDescription;
+
+  // SciLand V10 · rotating typewriter questions and statements.
+  // The line has a reserved layout height, so typing never shifts the hero buttons.
+  const typingNode = $('#hero-typewriter-text');
+  const typingPhrases = Array.isArray(data.heroTypewriterPhrases)
+    ? data.heroTypewriterPhrases.filter(p => typeof p === 'string' && p.trim()).map(p => p.trim()).slice(0, 8)
+    : [];
+  if (typingNode && typingPhrases.length) {
+    typingNode.textContent = typingPhrases[0];
+    if (!motionReduced && typingPhrases.length > 1) {
+      let phraseIndex = 0, charIndex = typingPhrases[0].length, deleting = true;
+      let typingTimer = 0, heroVisible = true;
+      const clearTyping = () => {
+        if (typingTimer) { clearTimeout(typingTimer); typingTimer = 0; }
+      };
+      function queueTyping(ms) {
+        clearTyping();
+        typingTimer = window.setTimeout(typeNext, ms);
+      }
+      function typeNext() {
+        typingTimer = 0;
+        if (document.hidden || !heroVisible) return;
+        if (deleting) {
+          charIndex = Math.max(0, charIndex - 1);
+          typingNode.textContent = typingPhrases[phraseIndex].slice(0, charIndex);
+          if (charIndex === 0) {
+            deleting = false;
+            phraseIndex = (phraseIndex + 1) % typingPhrases.length;
+            queueTyping(380);
+          } else {
+            queueTyping(36);
+          }
+        } else {
+          charIndex = Math.min(typingPhrases[phraseIndex].length, charIndex + 1);
+          typingNode.textContent = typingPhrases[phraseIndex].slice(0, charIndex);
+          if (charIndex === typingPhrases[phraseIndex].length) {
+            deleting = true;
+            queueTyping(2050);
+          } else {
+            queueTyping(67);
+          }
+        }
+      }
+      function syncTyping() {
+        if (document.hidden || !heroVisible) {
+          clearTyping();
+        } else if (!typingTimer) {
+          queueTyping(300);
+        }
+      }
+      document.addEventListener('visibilitychange', syncTyping);
+      if ('IntersectionObserver' in window) {
+        const hero = $('.hero');
+        if (hero) {
+          new IntersectionObserver(entries => {
+            heroVisible = entries[0].isIntersecting;
+            syncTyping();
+          }, {threshold: 0}).observe(hero);
+        }
+      }
+      queueTyping(2200);
+    }
+  }
   $('#mission-copy').textContent = data.missionCopy;
   const contactText = $('#contact-text');
   if (data.contactEmail) {
