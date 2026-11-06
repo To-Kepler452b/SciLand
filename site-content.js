@@ -12,6 +12,13 @@ window.SCILAND_CONTENT = {
   heroTitleFirst: "SciLand",
   heroTitleSecond: "A Scientific Embodied Laboratory Platform",
   heroDescription: "Toward autonomous, reliable and generalizable embodied intelligence for real-world scientific laboratories.",
+  // Rotating typewriter copy on the homepage; edit these phrases whenever needed.
+  heroTypewriterPhrases: [
+    "Can robots learn to do science?",
+    "What if experiments could teach?",
+    "Precision turns AI into action.",
+    "Toward a more intelligent laboratory."
+  ],
   mission: "Scientific discovery deserves intelligence that can act in the real world.",
   missionCopy: "Our research connects robot learning, trustworthy AI and autonomous scientific experimentation. From precise manipulation to long-horizon protocol execution, we study what it takes to make intelligent laboratory systems capable, verifiable and adaptable.",
   contactEmail: "", // e.g. lab@university.edu — left blank on purpose
