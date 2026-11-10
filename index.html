@@ -7,10 +7,11 @@
   <meta name="description" content="SciLand Lab explores scientific embodied intelligence, trustworthy robotics, and autonomous experimental systems." />
   <title>SciLand Lab — Scientific Embodied Intelligence</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-  <link rel="stylesheet" href="styles.css?v=v10-typewriter-20261106" />
+  <link rel="stylesheet" href="styles.css?v=v11-bilingual" />
   <link rel="stylesheet" href="dna-helix.css?v=v8-living-molecules" />
-  <script defer src="site-content.js?v=v10-typewriter"></script>
-  <script defer src="app.js?v=v10-typewriter"></script>
+  <script defer src="site-content.js?v=v11-bilingual"></script>
+  <script defer src="site-i18n.js?v=v11-bilingual"></script>
+  <script defer src="app.js?v=v11-bilingual"></script>
   <script defer src="dna-helix.js?v=v8-living-molecules"></script>
 </head>
 <body>
@@ -32,12 +33,20 @@
         <a href="#approach" data-nav="approach">Approach</a>
       </nav>
       <a class="nav-contact" href="#contact">Get in touch <span aria-hidden="true">↗</span></a>
+      <div class="language-switch desktop-language" role="group" aria-label="Website language">
+        <button class="active" type="button" data-lang="en" aria-pressed="true">English</button>
+        <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+      </div>
       <button class="menu-toggle" id="menu-toggle" type="button" aria-controls="mobile-navigation" aria-expanded="false" aria-label="Open navigation">
         <span></span><span></span>
       </button>
     </div>
     <nav class="mobile-nav" id="mobile-navigation" aria-label="Mobile navigation" hidden>
       <a href="#about">About</a><a href="#research">Research</a><a href="#reports">Technical reports</a><a href="#approach">Approach</a><a href="#contact">Contact</a>
+      <div class="language-switch mobile-language" role="group" aria-label="Website language">
+        <button class="active" type="button" data-lang="en" aria-pressed="true">English</button>
+        <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+      </div>
     </nav>
   </header>
 
