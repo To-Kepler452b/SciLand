@@ -647,3 +647,49 @@ h1,h2,h3 { font-family:'Manrope','DM Sans',Arial,sans-serif; }
 @media (prefers-reduced-motion: reduce) {
   .hero-typewriter-caret { animation: none; opacity: 1; }
 }
+
+
+/* SciLand V11 — bilingual header language controls and Chinese typography */
+.language-switch{
+  display:inline-flex;align-items:center;gap:2px;flex:0 0 auto;
+  padding:3px;border:1px solid rgba(186,225,253,.36);
+  background:rgba(8,31,57,.38);border-radius:999px;
+  white-space:nowrap;backdrop-filter:blur(8px);
+}
+.language-switch button{
+  border:0;cursor:pointer;min-height:32px;
+  padding:7px 11px;border-radius:999px;
+  color:#b7d8ec;background:transparent;
+  font:600 12px/1.1 'DM Sans','PingFang SC','Microsoft YaHei',sans-serif;
+  transition:background .18s,color .18s;
+}
+.language-switch button:hover{color:#fff;background:rgba(151,216,248,.12)}
+.language-switch button.active{
+  color:#06243d;background:#a2e4fa;
+  box-shadow:0 3px 12px rgba(70,179,235,.12);
+}
+.language-switch button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.mobile-language{display:none}
+html[lang="zh-CN"] body{
+  font-family:'DM Sans','PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;
+}
+html[lang="zh-CN"] .section-label,
+html[lang="zh-CN"] .section-kicker,
+html[lang="zh-CN"] .hero-line,
+html[lang="zh-CN"] .hero-mini{letter-spacing:.055em}
+html[lang="zh-CN"] .hero h1 em{font-weight:650;line-height:1.32}
+@media (min-width:801px) and (max-width:1280px){
+  .site-header .nav-shell{gap:clamp(8px,1.3vw,18px)}
+  .site-header .desktop-nav{gap:clamp(12px,1.6vw,22px)}
+  .site-header .nav-contact{padding:10px 11px}
+  .language-switch button{min-height:30px;padding:7px 9px;font-size:11px}
+  .site-header .brand{gap:8px}
+  .site-header .brand-type small{font-size:7px}
+}
+@media(max-width:800px){
+  .desktop-language{display:none}
+  .mobile-nav:not([hidden]) .mobile-language{
+    display:inline-flex;align-self:flex-start;margin-top:15px;
+  }
+  .mobile-language button{min-width:75px;padding:9px 14px}
+}
