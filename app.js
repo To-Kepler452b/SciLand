@@ -180,7 +180,7 @@
     $('#hero-description').textContent = data.heroDescription;
     $('#mission-copy').textContent = data.missionCopy;
     drawProjects();
-    $('#project-grid .reveal').forEach(el => el.classList.add('visible'));
+    $$('#project-grid .reveal').forEach(el => el.classList.add('visible'));
     drawReports();
     startTypewriter();
     menuToggle.setAttribute('aria-label', tr(menuToggle.getAttribute('aria-expanded')==='true' ? 'Close navigation':'Open navigation'));
