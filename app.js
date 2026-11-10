@@ -7,9 +7,10 @@
   const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
   const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  const tr = (key) => window.SCILAND_I18N ? window.SCILAND_I18N.t(key) : key;
 
   // Editable page identity.
-  document.title = `${data.labName} — Scientific Embodied Intelligence`;
+  document.title = `${data.labName} — ${tr('Scientific Embodied Intelligence')}`;
   $('#brand-name').textContent = data.labName;
   $('#footer-lab-name').textContent = data.labName;
   $('#footer-year').textContent = new Date().getFullYear();
@@ -18,68 +19,61 @@
   $('#hero-title-second').textContent = data.heroTitleSecond;
   $('#hero-description').textContent = data.heroDescription;
 
-  // SciLand V10 · rotating typewriter questions and statements.
-  // The line has a reserved layout height, so typing never shifts the hero buttons.
+  // Typewriter phrases restart cleanly when the site language changes.
   const typingNode = $('#hero-typewriter-text');
-  const typingPhrases = Array.isArray(data.heroTypewriterPhrases)
-    ? data.heroTypewriterPhrases.filter(p => typeof p === 'string' && p.trim()).map(p => p.trim()).slice(0, 8)
-    : [];
-  if (typingNode && typingPhrases.length) {
-    typingNode.textContent = typingPhrases[0];
-    if (!motionReduced && typingPhrases.length > 1) {
-      let phraseIndex = 0, charIndex = typingPhrases[0].length, deleting = true;
-      let typingTimer = 0, heroVisible = true;
-      const clearTyping = () => {
-        if (typingTimer) { clearTimeout(typingTimer); typingTimer = 0; }
-      };
-      function queueTyping(ms) {
-        clearTyping();
-        typingTimer = window.setTimeout(typeNext, ms);
+  let stopTypewriter = () => {};
+  function startTypewriter() {
+    stopTypewriter();
+    const phrases = Array.isArray(data.heroTypewriterPhrases)
+      ? data.heroTypewriterPhrases.filter(p => typeof p === 'string' && p.trim()).map(p => p.trim()).slice(0,8)
+      : [];
+    if (!typingNode || !phrases.length) return;
+    typingNode.textContent = phrases[0];
+    if (motionReduced || phrases.length < 2) return;
+    let phraseIndex=0, charIndex=phrases[0].length, deleting=true, timer=0, heroVisible=true;
+    let observer=null, disposed=false;
+    function clearTyping(){ if(timer){clearTimeout(timer);timer=0;} }
+    function queue(ms){clearTyping();timer=window.setTimeout(tick,ms);}
+    function tick(){
+      timer=0;
+      if (disposed || document.hidden || !heroVisible) return;
+      if (deleting) {
+        charIndex=Math.max(0,charIndex-1);
+        typingNode.textContent=phrases[phraseIndex].slice(0,charIndex);
+        if(charIndex===0){
+          deleting=false;phraseIndex=(phraseIndex+1)%phrases.length;queue(370);
+        } else queue(38);
+      } else {
+        charIndex=Math.min(phrases[phraseIndex].length,charIndex+1);
+        typingNode.textContent=phrases[phraseIndex].slice(0,charIndex);
+        if(charIndex===phrases[phraseIndex].length){deleting=true;queue(2150);}
+        else queue(70);
       }
-      function typeNext() {
-        typingTimer = 0;
-        if (document.hidden || !heroVisible) return;
-        if (deleting) {
-          charIndex = Math.max(0, charIndex - 1);
-          typingNode.textContent = typingPhrases[phraseIndex].slice(0, charIndex);
-          if (charIndex === 0) {
-            deleting = false;
-            phraseIndex = (phraseIndex + 1) % typingPhrases.length;
-            queueTyping(380);
-          } else {
-            queueTyping(36);
-          }
-        } else {
-          charIndex = Math.min(typingPhrases[phraseIndex].length, charIndex + 1);
-          typingNode.textContent = typingPhrases[phraseIndex].slice(0, charIndex);
-          if (charIndex === typingPhrases[phraseIndex].length) {
-            deleting = true;
-            queueTyping(2050);
-          } else {
-            queueTyping(67);
-          }
-        }
-      }
-      function syncTyping() {
-        if (document.hidden || !heroVisible) {
-          clearTyping();
-        } else if (!typingTimer) {
-          queueTyping(300);
-        }
-      }
-      document.addEventListener('visibilitychange', syncTyping);
-      if ('IntersectionObserver' in window) {
-        const hero = $('.hero');
-        if (hero) {
-          new IntersectionObserver(entries => {
-            heroVisible = entries[0].isIntersecting;
-            syncTyping();
-          }, {threshold: 0}).observe(hero);
-        }
-      }
-      queueTyping(2200);
     }
+    function syncTyping(){
+      if(disposed)return;
+      if(document.hidden||!heroVisible) clearTyping();
+      else if(!timer)queue(300);
+    }
+    document.addEventListener('visibilitychange',syncTyping);
+    if('IntersectionObserver' in window){
+      const hero=$('.hero');
+      if(hero){
+        observer=new IntersectionObserver(entries=>{
+          heroVisible=entries[0].isIntersecting;syncTyping();
+        },{threshold:0});
+        observer.observe(hero);
+      }
+    }
+    stopTypewriter=()=>{
+      disposed=true;
+      clearTyping();
+      document.removeEventListener('visibilitychange',syncTyping);
+      if(observer)observer.disconnect();
+    };
+    queue(2200);
   }
+  startTypewriter();
   $('#mission-copy').textContent = data.missionCopy;
   const contactText = $('#contact-text');
   if (data.contactEmail) {
@@ -88,28 +82,31 @@
   }
 
   // Research cards. A single SciLand project uses a dedicated wide layout.
+  function drawProjects() {
   $('#project-grid').classList.toggle('single-project', data.projects.length === 1);
   $('#project-grid').innerHTML = data.projects.map((project, i) => `
     <article class="project-card reveal ${i === 0 ? 'project-featured' : ''}">
-      <div class="project-cover"><img src="${escapeHtml(project.image)}" alt="Illustration of ${escapeHtml(project.title)} research theme" loading="lazy" width="700" height="430"/><div class="project-image-index">${escapeHtml(project.number)} / 0${data.projects.length}</div></div>
+      <div class="project-cover"><img src="${escapeHtml(project.image)}" alt="${escapeHtml(tr('Project illustration:') + ' ' + project.title)}" loading="lazy" width="700" height="430"/><div class="project-image-index">${escapeHtml(project.number)} / 0${data.projects.length}</div></div>
       <div class="project-content"><div class="project-meta"><span>${escapeHtml(project.category)}</span><span class="project-status ${escapeHtml(project.statusTone)}"><i></i>${escapeHtml(project.status)}</span></div>
       <h3>${escapeHtml(project.title)}</h3><p class="project-subtitle">${escapeHtml(project.subtitle)}</p><p class="project-summary">${escapeHtml(project.summary)}</p>
       <div class="project-tags">${project.tags.map(tag => `<span>${escapeHtml(tag)}</span>`).join('')}</div>
-      <button class="project-open" type="button" data-project="${escapeHtml(project.id)}" aria-label="Read overview of ${escapeHtml(project.title)}"><span>Explore the project</span><span class="project-arrow" aria-hidden="true">↗</span></button></div>
+      <button class="project-open" type="button" data-project="${escapeHtml(project.id)}" aria-label="${escapeHtml(tr('Read overview of'))} ${escapeHtml(project.title)}"><span>${escapeHtml(tr('Explore the project'))}</span><span class="project-arrow" aria-hidden="true">↗</span></button></div>
     </article>
   `).join('');
+  }
+  drawProjects();
 
   // Reports and filters.
   let activeFilter = 'all';
   const reportList = $('#report-list');
   function drawReports() {
     const reports = data.reports.filter(r => activeFilter === 'all' || (activeFilter === 'other' ? r.type !== 'Technical Report' : r.type === activeFilter));
-    $('#report-count').textContent = `${String(reports.length).padStart(2,'0')} ${reports.length === 1 ? 'ENTRY' : 'ENTRIES'}`;
+    $('#report-count').textContent = `${String(reports.length).padStart(2,'0')} ${tr(reports.length === 1 ? 'ENTRY' : 'ENTRIES')}`;
     reportList.innerHTML = reports.map(report => `
       <article class="report-entry">
         <div class="report-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M8 3h11l6 6v20H8z" stroke="currentColor" stroke-width="1.5"/><path d="M19 3v7h6M12 16h9M12 20h9M12 24h6" stroke="currentColor" stroke-width="1.5"/></svg></div>
-        <div class="report-main"><div class="report-meta"><span>${escapeHtml(report.type)}</span><span class="report-meta-dot">•</span><span>${escapeHtml(report.year)}</span></div><h3>${escapeHtml(report.title)}</h3><p>${escapeHtml(report.description)}</p></div>
-        <div class="report-action"><span class="report-state">${escapeHtml(report.status)}</span>${report.url ? `<a class="report-link" href="${escapeHtml(report.url)}" target="_blank" rel="noopener noreferrer">Open PDF <span aria-hidden="true">↗</span></a>` : `<button class="report-link" type="button" data-report="${escapeHtml(report.id)}">Read overview <span aria-hidden="true">↗</span></button>`}</div>
+        <div class="report-main"><div class="report-meta"><span>${escapeHtml(tr(report.type))}</span><span class="report-meta-dot">•</span><span>${escapeHtml(report.year)}</span></div><h3>${escapeHtml(report.title)}</h3><p>${escapeHtml(report.description)}</p></div>
+        <div class="report-action"><span class="report-state">${escapeHtml(report.status)}</span>${report.url ? `<a class="report-link" href="${escapeHtml(report.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(tr('Open PDF'))} <span aria-hidden="true">↗</span></a>` : `<button class="report-link" type="button" data-report="${escapeHtml(report.id)}">${escapeHtml(tr('Read overview'))} <span aria-hidden="true">↗</span></button>`}</div>
       </article>
     `).join('');
     $$('.filter-button').forEach(button => {
@@ -144,7 +141,7 @@
     const reportButton = e.target.closest('[data-report]');
     if (reportButton) {
       const r = data.reports.find(x => x.id === reportButton.dataset.report);
-      if (r) showDetail({category: r.type.toUpperCase(), title: r.title, subtitle: `${r.year} · ${r.status}`, description: r.summary, tags: [r.type, r.status], url: r.url});
+      if (r) showDetail({category: tr(r.type).toUpperCase(), title: r.title, subtitle: `${r.year} · ${r.status}`, description: r.summary, tags: [r.type, r.status], url: r.url});
     }
   });
   $('#dialog-close').addEventListener('click', () => dialog.close());
@@ -155,7 +152,7 @@
   const mobileNav = $('#mobile-navigation');
   function closeMenu() {
     menuToggle.setAttribute('aria-expanded','false');
-    menuToggle.setAttribute('aria-label','Open navigation');
+    menuToggle.setAttribute('aria-label',tr('Open navigation'));
     menuToggle.classList.remove('is-open');
     mobileNav.hidden = true;
     document.body.classList.remove('menu-open');
@@ -163,7 +160,7 @@
   menuToggle.addEventListener('click', () => {
     const opening = menuToggle.getAttribute('aria-expanded') !== 'true';
     menuToggle.setAttribute('aria-expanded', String(opening));
-    menuToggle.setAttribute('aria-label', opening ? 'Close navigation' : 'Open navigation');
+    menuToggle.setAttribute('aria-label', tr(opening ? 'Close navigation' : 'Open navigation'));
     menuToggle.classList.toggle('is-open', opening);
     mobileNav.hidden = !opening;
     document.body.classList.toggle('menu-open', opening);
@@ -171,6 +168,24 @@
   $$('#mobile-navigation a').forEach(a => a.addEventListener('click', closeMenu));
   document.addEventListener('keydown', e => {if(e.key === 'Escape') closeMenu();});
   window.addEventListener('resize', () => {if(window.innerWidth > 800) closeMenu();});
+
+  // Refresh programmatically generated areas without reloading or resetting other effects.
+  window.addEventListener('sciland:languagechange', () => {
+    document.title = data.labName + ' — ' + tr('Scientific Embodied Intelligence');
+    $('#brand-name').textContent = data.labName;
+    $('#footer-lab-name').textContent = data.labName;
+    $('#hero-eyebrow').textContent = data.heroEyebrow;
+    $('#hero-title-first').textContent = data.heroTitleFirst;
+    $('#hero-title-second').textContent = data.heroTitleSecond;
+    $('#hero-description').textContent = data.heroDescription;
+    $('#mission-copy').textContent = data.missionCopy;
+    drawProjects();
+    $('#project-grid .reveal').forEach(el => el.classList.add('visible'));
+    drawReports();
+    startTypewriter();
+    menuToggle.setAttribute('aria-label', tr(menuToggle.getAttribute('aria-expanded')==='true' ? 'Close navigation':'Open navigation'));
+    if(dialog.open)dialog.close();
+  });
 
   // Scroll progress and sticky header contrast.
   let scrollFrame = 0;
