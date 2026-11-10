@@ -1,0 +1,71 @@
+name: Validate SciLand bilingual website
+on:
+  push:
+    paths:
+      - index.html
+      - app.js
+      - site-content.js
+      - site-i18n.js
+      - '.github/workflows/validate-i18n.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bilingual:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check site-content.js
+          node --check site-i18n.js
+          node --check app.js
+          node --check dna-helix.js
+      - name: Install lightweight DOM test dependency
+        run: |
+          npm init -y >/dev/null
+          npm install --no-save --ignore-scripts jsdom@26.1.0
+      - name: Test English and Chinese switching end to end
+        run: |
+          node <<'NODE'
+          const assert=require('node:assert/strict');
+          const fs=require('node:fs');
+          const {JSDOM}=require('jsdom');
+          const html=fs.readFileSync('index.html','utf8');
+          assert(html.indexOf('site-i18n.js')<html.indexOf('app.js'));
+          const dom=new JSDOM(html,{url:'https://to-kepler452b.github.io/SciLand/',runScripts:'outside-only',pretendToBeVisual:true});
+          const w=dom.window,d=w.document;
+          w.matchMedia=()=>({matches:true,addEventListener(){},removeEventListener(){},addListener(){},removeListener(){}});
+          w.HTMLCanvasElement.prototype.getContext=()=>null;
+          if(!w.HTMLDialogElement.prototype.showModal)w.HTMLDialogElement.prototype.showModal=function(){this.open=true};
+          if(!w.HTMLDialogElement.prototype.close)w.HTMLDialogElement.prototype.close=function(){this.open=false};
+          for(const filename of ['site-content.js','site-i18n.js','app.js','dna-helix.js'])
+            w.eval(fs.readFileSync(filename,'utf8'));
+          const click = (language) => d.querySelector('button[data-lang="'+language+'"]').click();
+          assert.equal(d.documentElement.lang,'en');
+          assert.equal(d.querySelector('#main-navigation').textContent.includes('Research'),true);
+          assert.equal(d.querySelector('#project-grid').textContent.includes('Explore the project'),true);
+          click('zh');
+          assert.equal(d.documentElement.lang,'zh-CN');
+          assert.equal(d.querySelector('#main-navigation').textContent.includes('科研项目'),true);
+          assert.equal(d.querySelector('#hero-title-second').textContent.includes('科学具身'),true);
+          assert.equal(d.querySelector('#project-grid').textContent.includes('查看项目'),true);
+          assert.equal(d.querySelector('#report-list').textContent.includes('查看简介'),true);
+          assert.equal(d.querySelector('#hero-typewriter-text').textContent.includes('机器人'),true);
+          assert.equal([...d.querySelectorAll('button[data-lang="zh"]')].every(b=>b.getAttribute('aria-pressed')==='true'),true);
+          d.querySelector('[data-report="sciland-report"]').click();
+          assert.equal(d.querySelector('#dialog-description').textContent.includes('技术报告'),true);
+          click('en');
+          assert.equal(d.documentElement.lang,'en');
+          assert.equal(d.querySelector('#project-grid').textContent.includes('Explore the project'),true);
+          assert.equal(d.querySelector('#report-list').textContent.includes('Read overview'),true);
+          assert.equal(d.querySelector('#hero-typewriter-text').textContent.includes('robots'),true);
+          assert.equal([...d.querySelectorAll('button[data-lang="en"]')].every(b=>b.getAttribute('aria-pressed')==='true'),true);
+          dom.window.close();
+          console.log('Bilingual DOM and interaction checks passed');
+          NODE
